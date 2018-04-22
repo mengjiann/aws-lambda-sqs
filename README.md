@@ -55,6 +55,6 @@ Based on https://dzone.com/articles/run-code-with-spring-cloud-function-on-aws-l
 # Reference:
 - CLI tool for local development and testing of AWS lambda: https://github.com/awslabs/aws-sam-local
 - For setting up local AWS cloud stack: https://github.com/localstack/localstack
-- Reference for command: http://bluesock.org/~willkg/blog/dev/using_localstack_for_s3.html
+- Reference for command: https://lobster1234.github.io/2017/04/05/working-with-localstack-command-line/
 - http://bluesock.org/~willkg/blog/dev/using_localstack_for_s3.html
 - http://www.frommknecht.net/spring-cloud-aws-messaging/
