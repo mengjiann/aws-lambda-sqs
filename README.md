@@ -30,3 +30,31 @@ A sample Java AWS Lambda function to listen to AWS SQS queue and receive message
 
 # Credits
 Based on https://dzone.com/articles/run-code-with-spring-cloud-function-on-aws-lambda
+
+# Guide to local deployment using sam-local and localstack
+- Install Docker on your machine: https://www.docker.com/get-docker
+- Install aws-sam-local following the guide on the github readme.
+- Clone the localstack repo to your machine. Then, navigate to the local branch folder to spin up the Localstack using docker-compose: TMPDIR=/private$TMPDIR docker-compose up
+  - You should seet "localstack_1 | Ready " when the localstack container is spinned up.
+  - Then, you should check the network created for localstack container. The default is: localstack_default. 
+    - Or you run the command: docker inspect <CONTAINER_ID> -f "{{json .NetworkSettings.Networks }}".
+- Now, you will need to create messages in the queues:
+  - Create queue: 
+    - aws --endpoint-url=http://localhost:4576 sqs create-queue --queue-name test_queue
+  - List queue:
+    - aws --endpoint-url=http://localhost:4576 sqs list-queues
+  - Send message: 
+    - aws --endpoint-url=http://localhost:4576 sqs send-message --queue-url http://localhost:4576/queue/test_queue --message-body 'Test Message!'
+- Finally, navigate to the folder where the SAM template resides and run:
+  - sam local invoke AwsLambdaSqsLocal --log-file ./output.log -e event.json --docker-network <LOCALSTACK NETWORK>
+    - Since the aws lambda function is executed in a docker container, it cant access the localstack deployed on the host machine. That is the reason you will need to deploy the container containing the lambda function to the same network as the localstack.
+    - You can check on the output.log for debuging purpose.
+    - There is also another way to pass trigger event to the lambda. You can read more from the sam-local github page.
+
+
+# Reference:
+- CLI tool for local development and testing of AWS lambda: https://github.com/awslabs/aws-sam-local
+- For setting up local AWS cloud stack: https://github.com/localstack/localstack
+- Reference for command: http://bluesock.org/~willkg/blog/dev/using_localstack_for_s3.html
+- http://bluesock.org/~willkg/blog/dev/using_localstack_for_s3.html
+- http://www.frommknecht.net/spring-cloud-aws-messaging/
