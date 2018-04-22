@@ -1,12 +1,7 @@
 package com.mj.aws.lambda.sqs;
 
 import com.amazonaws.services.sqs.AmazonSQS;
-import com.amazonaws.services.sqs.model.DeleteMessageBatchRequest;
-import com.amazonaws.services.sqs.model.DeleteMessageBatchRequestEntry;
-import com.amazonaws.services.sqs.model.DeleteMessageBatchResult;
-import com.amazonaws.services.sqs.model.Message;
-import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
-import com.google.common.base.Preconditions;
+import com.amazonaws.services.sqs.model.*;
 import com.mj.aws.lambda.sqs.config.AppConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +26,8 @@ public class AwsLambdaSqsFunction implements Function<Void,Void>{
 
         String queueUrl = appConfig.getQueueUrl();
 
+        log.info("Retrieved queues: {}",amazonSqs.listQueues().getQueueUrls().toString());
+
         List<Message> messageList = this.getQueueMessageByQueueUrl(queueUrl);
 
         for (Message message : messageList) {
@@ -44,7 +41,10 @@ public class AwsLambdaSqsFunction implements Function<Void,Void>{
 
     private void deleteMessagesByQueueUrl(List<Message> messageList, String queueUrl) {
 
-        Preconditions.checkArgument(!messageList.isEmpty(),"Empty list for removal.");
+        if(messageList == null || messageList.isEmpty()){
+            log.info("Empty list for removal");
+            return;
+        }
 
         List<DeleteMessageBatchRequestEntry> deleteMessageEntries = new ArrayList<>();
 
