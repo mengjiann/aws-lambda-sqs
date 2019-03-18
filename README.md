@@ -32,6 +32,7 @@ A sample Java AWS Lambda function to listen to AWS SQS queue and receive message
 Based on https://dzone.com/articles/run-code-with-spring-cloud-function-on-aws-lambda
 
 # Guide to local deployment using sam-local and localstack
+- Full guide: https://medium.com/@mengjiannlee/local-deployment-of-aws-lambda-spring-cloud-function-using-sam-local-and-localstack-dc7669110906
 - Install Docker on your machine: https://www.docker.com/get-docker
 - Install aws-sam-local following the guide on the github readme.
 - Clone the localstack repo to your machine. Then, navigate to the local branch folder to spin up the Localstack using docker-compose: TMPDIR=/private$TMPDIR docker-compose up
