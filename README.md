@@ -52,6 +52,26 @@ Based on https://dzone.com/articles/run-code-with-spring-cloud-function-on-aws-l
     - You can check on the output.log for debuging purpose.
     - There is also another way to pass trigger event to the lambda. You can read more from the sam-local github page.
 
+# Guide to deploy as SAR
+- Upload the sam template `template-sar.yaml` to the SAR console.
+- Remember to update the `CodeUri` to point to the jar in your bucket.
+- For the S3 bucket serving the `CodeUri`, the following is required for the bucket policy.
+````
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service":  "serverlessrepo.amazonaws.com"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::<your-bucket-name>/*"
+        }
+    ]
+}
+````
+
 
 # Reference:
 - CLI tool for local development and testing of AWS lambda: https://github.com/awslabs/aws-sam-local
@@ -59,3 +79,7 @@ Based on https://dzone.com/articles/run-code-with-spring-cloud-function-on-aws-l
 - Reference for command: https://lobster1234.github.io/2017/04/05/working-with-localstack-command-line/
 - http://bluesock.org/~willkg/blog/dev/using_localstack_for_s3.html
 - http://www.frommknecht.net/spring-cloud-aws-messaging/
+- https://docs.aws.amazon.com/serverlessrepo/latest/devguide/serverlessrepo-how-to-publish.html
+- https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md
+- https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-ref.html
+- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-api-permissions-reference.html

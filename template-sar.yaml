@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  QueueName:
+    Type: String
+    Description: Queue name which the lambda will access
+  QueueUrl:
+    Type: String
+    Description: Queue url which the lambda will access
+Transform: AWS::Serverless-2016-10-31
+Description: Spring Cloud Functions.
+Resources:
+  AwsLambdaSqsLocal:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: aws-lambda-sqs
+      Handler: com.mj.aws.lambda.sqs.AwsLambdaSqsFunctionHandler
+      Description: For AWS Sqs Queue
+      Runtime: java8
+      CodeUri: s3://my-sar-artifact/aws-lambda-sqs/aws-lambda-sqs-0.0.4-SNAPSHOT-aws.jar
+      MemorySize: 320
+      Timeout: 240
+      Policies:
+        - AWSLambdaExecute
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - sqs:ChangeMessageVisibility
+                - sqs:ChangeMessageVisibilityBatch
+                - sqs:DeleteMessage
+                - sqs:DeleteMessageBatch
+                - sqs:GetQueueAttributes
+                - sqs:ReceiveMessage
+              Resource:
+                - Fn::Sub:
+                    - arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${queueName}
+                    - queueName:
+                        Ref: QueueName
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - sqs:ListQueues
+                - sqs:GetQueueAttributes
+                - sqs:GetQueueUrl
+              Resource:
+                - !Sub arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:*
+      Environment:
+        Variables:
+          SPRING_PROFILES_ACTIVE: aws
+          QUEUE_URL:
+            Ref: QueueUrl
